@@ -1,0 +1,30 @@
+{
+  "verbose": true,
+  "watch": [
+    ".",
+    ".env"
+  ],
+  "ignore": [
+    "node_modules/",
+    ".git/",
+    "*.test.js",
+    "coverage/",
+    "docs/"
+  ],
+  "ext": "js,json,sql",
+  "exec": "node -r dotenv/config server.js",
+  "events": {
+    "start": "clear || cls",
+    "restart": "clear || cls"
+  },
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "delay": "500",
+  "signal": "SIGTERM",
+  "restartable": "rs",
+  "colours": true,
+  "exitcrash": true,
+  "legacyWatch": false,
+  "runOnChangeOnly": false
+}
