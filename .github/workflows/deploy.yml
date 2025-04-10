@@ -20,13 +20,7 @@ jobs:
 
     - name: Install dependencies
       run: npm install
-
-    - name: Build project
-      run: npm run build
-
-    - name: Create logs directory (if needed)
-      run: mkdir -p logs && touch logs/server.log
-
+      
     - name: Zip app for EB
       run: zip -r app.zip . -x "*.git*" "node_modules/*" ".github/*"
 
