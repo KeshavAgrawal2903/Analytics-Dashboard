@@ -1,0 +1,30 @@
+{
+  "name": "analytics-dashboard",
+  "version": "1.0.0",
+  "description": "A modern analytics dashboard with React frontend and Node.js backend",
+  "main": "start.sh",
+  "scripts": {
+    "start": "./start.sh",
+    "install-deps": "cd server && npm install && cd ../client && npm install",
+    "start-server": "cd server && PORT=5001 node server.js",
+    "start-client": "cd client && npm run start",
+    "dev": "./start.sh",
+    "clean": "kill $(lsof -t -i:3000,5001) 2>/dev/null || true"
+  },
+  "keywords": [
+    "analytics",
+    "dashboard",
+    "react",
+    "nodejs",
+    "postgresql"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "dependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
