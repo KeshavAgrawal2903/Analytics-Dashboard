@@ -238,3 +238,132 @@ docker-compose logs db
 3. Database connection fails:
    - Check PostgreSQL credentials in .env
    - Ensure database service is running
+
+# Jenkins Pipeline Setup Guide
+
+This guide provides instructions for setting up the Jenkins pipeline for the full-stack project.
+
+## Prerequisites
+
+1. Jenkins server installed and running
+2. Docker installed on Jenkins server
+3. AWS account with EC2 instance
+4. GitHub repository
+5. Docker registry (e.g., Docker Hub, AWS ECR)
+6. Slack workspace for notifications
+
+## Jenkins Setup
+
+### 1. Install Required Plugins
+
+Install the following Jenkins plugins:
+- Docker Pipeline
+- SSH Agent
+- Slack Notification
+- GitHub Integration
+- Credentials Binding
+
+### 2. Configure Credentials
+
+Add the following credentials in Jenkins:
+1. AWS Credentials:
+   - ID: `aws-access-key-id`
+   - ID: `aws-secret-access-key`
+   - Type: Secret text
+
+2. Docker Registry:
+   - ID: `docker-credentials`
+   - Type: Username with password
+
+3. EC2 SSH Key:
+   - ID: `ec2-ssh-key`
+   - Type: SSH Username with private key
+
+4. Slack Webhook:
+   - ID: `slack-webhook-url`
+   - Type: Secret text
+
+### 3. GitHub Webhook Setup
+
+1. In your GitHub repository:
+   - Go to Settings > Webhooks
+   - Click "Add webhook"
+   - Payload URL: `http://your-jenkins-url/github-webhook/`
+   - Content type: `application/json`
+   - Select events: "Just the push event"
+   - Click "Add webhook"
+
+2. In Jenkins:
+   - Create a new Pipeline job
+   - Under "Build Triggers", select "GitHub hook trigger for GITScm polling"
+   - Under "Pipeline", select "Pipeline script from SCM"
+   - Choose "Git" as SCM
+   - Enter your repository URL
+   - Set branch specifier to `*/main` (or your main branch)
+   - Script path: `Jenkinsfile`
+
+### 4. EC2 Instance Setup
+
+1. Create an EC2 instance with:
+   - Ubuntu/Debian Linux
+   - Docker installed
+   - Ports 80 and 3000 open in security group
+
+2. Create an SSH key pair and add the private key to Jenkins credentials
+
+3. Configure the EC2 instance:
+   ```bash
+   # Install Docker
+   sudo apt-get update
+   sudo apt-get install docker.io
+   sudo usermod -aG docker ubuntu
+   
+   # Install Docker Compose
+   sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+   sudo chmod +x /usr/local/bin/docker-compose
+   ```
+
+## Pipeline Configuration
+
+1. Update the following variables in the `Jenkinsfile`:
+   - `DOCKER_REGISTRY`: Your Docker registry URL
+   - `EC2_HOST`: Your EC2 instance public IP or DNS
+   - `AWS_REGION`: Your AWS region
+
+2. Ensure your project structure matches:
+   ```
+   project/
+   ├── frontend/
+   │   ├── Dockerfile
+   │   └── ...
+   ├── backend/
+   │   ├── Dockerfile
+   │   └── ...
+   └── Jenkinsfile
+   ```
+
+## Testing the Pipeline
+
+1. Push a change to your GitHub repository
+2. The webhook should trigger the Jenkins pipeline
+3. Monitor the build in Jenkins
+4. Check Slack for notifications
+5. Verify the deployment on your EC2 instance
+
+## Troubleshooting
+
+1. If the pipeline fails:
+   - Check Jenkins console output
+   - Verify credentials are correctly configured
+   - Ensure EC2 instance is accessible
+   - Check Docker registry access
+
+2. If GitHub webhook doesn't trigger:
+   - Verify webhook URL is correct
+   - Check GitHub webhook delivery logs
+   - Ensure Jenkins has proper network access
+
+3. If deployment fails:
+   - Check EC2 instance logs
+   - Verify Docker containers are running
+   - Check network connectivity

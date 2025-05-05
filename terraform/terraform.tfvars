@@ -1,0 +1,6 @@
+aws_region = "us-east-1"
+project_name = "analytics-dashboard"
+key_name = "analytics-dashboard-key"
+db_username = "admin"
+db_password = "your-secure-password"
+db_instance_class = "db.t2.micro" 
